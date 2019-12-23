@@ -1,0 +1,23 @@
+clear; clc; close all;
+
+
+  
+%get constant robot parameters
+robot = get_robot();
+r_init = get_node(robot,6);%robot.r(:);
+ro_init = [robot.ro(5),robot.ro(6),robot.ro(3),robot.ro(11)]';
+S0 = g_S(r_init, ro_init);
+s0_ar = [2,20];
+real_s_ar = 
+for i = 1:20
+    dS = [1 0 0
+      0 1 0 
+      0 0 1]*(i-10);
+    [real_S, S] = stiffness_design(dS, robot);
+end
+
+
+
+disp(['Found stiffness: ', mat2str(S)])
+disp(['Real stiffness: ', mat2str(real_S)])
+
