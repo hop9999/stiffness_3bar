@@ -1,29 +1,12 @@
-function [f] = get_forces_sum_approx(r, robot)
+function [f] = get_forces_sum_approx(r, robot, normal)
 k  = robot.k;
 
 ro_init =  robot.ro;%[robot.ro(5),robot.ro(6),robot.ro(3),robot.ro(11)]';
 
-
-con = [4 1 7
-       4 2 11
-       4 5 4
-       4 6 6
-       5 2 8
-       5 3 12
-       5 4 4
-       5 6 5
-       6 1 10
-       6 3 9
-       6 4 6
-       6 5 5];
+con = get_connectivity();
 
 %calculate linearization normals
 s = size(con);
-normal = zeros(3,s(1));
-for i = 1:s(1)
-    normal(:,i) = (r(:,con(i,1)) - r(:,con(i,2)))/...
-        norm(r(:,con(i,1)) - r(:,con(i,2)));
-end
 
 for i = 1:s(1)
     f_norm(:,i) = -k(con(i,3))*((r(:,con(i,1)) - r(:,con(i,2))) - ro_init(con(i,3))*normal(:,i));
