@@ -1,60 +1,37 @@
 clear; clc; close all;
 
-%get constant robot parameters
 robot = get_robot();
-r_init = robot.r;%get_node(robot,6);%robot.r(:);
-ro_init =  robot.ro;%[robot.ro(5),robot.ro(6),robot.ro(3),robot.ro(11)]';
-% tensor_K_r  = g_tensor_K_r(r_init, ro_init);
-% tensor_K_ro = g_tensor_K_ro(r_init, ro_init);
-% vS_0        = g_vS_0(r_init, ro_init);
-% vS = tensor_K_r*r_init(:) + tensor_K_ro*ro_init + vS_0;
-
+r_init = robot.r;
+ro_init =  robot.ro;
 S0 = g_S(r_init, ro_init)
 
-s0_ar = zeros(3,20);
-real_s_ar = zeros(3,20);
-optim_s_ar = zeros(3,20);
+n = 7;
+s_des_ar = zeros(3,n);
+s_real_ar = zeros(3,n);
+f_err_arr = zeros(1,n);
 
-for i = 1:1
-    dS = [1 0 0
-          0 -1 0 
-          0 0 -1]*1;
-    [real_S, optim_S] = stiffness_design_node(dS, robot)
-  
-    s0_ar(:,i) = diag(S0) + diag(dS);
-    real_s_ar(:,i) = diag(real_S);
-    optim_s_ar(:,i) = diag(optim_S);
+for j = 1:n
+    real_S = [55.0  0  0
+              0  50.0  0
+              0  0  45.0];
+    dS = [1  0  0
+          0  1  0
+          0  0  1]*(j-1-(n-1)/2);
+    S_des = real_S + dS;
+    for i = 1:50
+        er_S = S_des - real_S
+        [real_S, ~, r, ro] = stiffness_design_node(er_S, robot);
+        real_S;
+        robot.r = r;
+        robot.ro = ro;
+        get_forces_sum(r, robot)
+
+    end
+    s_des_ar(:,j) = diag(S_des);
+    s_real_ar(:,j) = diag(real_S);
+    f_err_arr(:,j) = norm(get_forces_sum(r, robot));
 end
 
-fig = figure('Color', 'w');
-fig.Name = "l";
- hold on;
-
-plot( real_s_ar(1,:), 'LineWidth', 2, 'LineStyle', '-.', 'Color', 'r');
-plot( real_s_ar(2,:), 'LineWidth', 2, 'LineStyle', '-.', 'Color', 'g');
-plot( real_s_ar(3,:), 'LineWidth', 2, 'LineStyle', '-.', 'Color', 'b');
-
-plot( optim_s_ar(1,:), 'LineWidth', 2, 'LineStyle', '-', 'Color', 'r');
-plot( optim_s_ar(2,:), 'LineWidth', 2, 'LineStyle', '-', 'Color', 'g');
-plot( optim_s_ar(3,:), 'LineWidth', 2, 'LineStyle', '-', 'Color', 'b');
-
-plot( s0_ar(1,:), 'LineWidth', 2, 'LineStyle', '--', 'Color', 'r');
-plot( s0_ar(2,:), 'LineWidth', 2, 'LineStyle', '--', 'Color', 'g');
-plot( s0_ar(3,:), 'LineWidth', 2, 'LineStyle', '--', 'Color', 'b');
-
-grid on; grid minor;
-
-ax = gca;
-ax.GridAlpha = 0.6;
-ax.LineWidth = 0.5;
-ax.MinorGridLineStyle = '-';
-ax.MinorGridAlpha = 0.2;
-ax.FontName = 'Tibetan Machine Uni';
-ax.FontSize = 16;
-
-xlabel_handle = xlabel('$$t$$, s');
-xlabel_handle.Interpreter = 'latex';
-ylabel_handle = ylabel('$$\bar q_i$$ (m)');
-ylabel_handle.Interpreter = 'latex';
-legend_handle = legend('$$\bar q_1$$ (m)', '$$\bar q_2$$ (m)', '$$\bar q_3$$ (m)', '$$\bar q_4$$ (m)');
-legend_handle.Interpreter = 'latex';
+s_des_ar
+s_real_ar
+f_err_arr

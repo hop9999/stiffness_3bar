@@ -1,7 +1,0 @@
-clear; clc; close all;
-disp('***********************')
-disp('***********************')
-disp('***********************')
-disp('******* ROUND *******')
-robot = get_robot();
-r = fk_approx(robot)
