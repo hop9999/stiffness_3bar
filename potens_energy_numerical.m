@@ -6,10 +6,10 @@ function P = potens_energy_numerical(q,robot)
     r1 = get_node(robot, 1);
     r2 = get_node(robot, 2);
     r3 = get_node(robot, 3);
-    r4 = get_node(robot, 4);
-    r5 = get_node(robot, 5);
-    r6 = get_node(robot, 6);
-    disp([norm(r1-r4),norm(r2-r5),norm(r3-r6)])
+    r4 = q(1:3)';
+    r5 = q(4:6)';
+    r6 = q(7:9)';
+    q
     P1 =  0.5*k(1)*(norm(r1 - r2) - ro(1))^2;
     P2 =  0.5*k(2)*(norm(r2 - r3) - ro(2))^2;
     P3 =  0.5*k(3)*(norm(r3 - r1) - ro(3))^2;

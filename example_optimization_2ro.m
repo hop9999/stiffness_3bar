@@ -4,27 +4,26 @@ clear; clc; close all;
 robot = get_robot();
 r_init = robot.r;%get_node(robot,6);%robot.r(:);
 ro_init =  robot.ro;%[robot.ro(5),robot.ro(6),robot.ro(3),robot.ro(11)]';
-% tensor_K_r  = g_tensor_K_r(r_init, ro_init);
-% tensor_K_ro = g_tensor_K_ro(r_init, ro_init);
-% vS_0        = g_vS_0(r_init, ro_init);
-% vS = tensor_K_r*r_init(:) + tensor_K_ro*ro_init + vS_0;
-
 S0 = g_S(r_init, ro_init)
 
 s0_ar = zeros(3,20);
 real_s_ar = zeros(3,20);
 optim_s_ar = zeros(3,20);
 
-for i = 1:1
+for i = 1:20
     dS = [1 0 0
-          0 -1 0 
-          0 0 -1]*1;
-    [real_S, optim_S] = stiffness_design_node(dS, robot)
-  
+          0 1 0 
+          0 0 1]*(i-10);
+    [real_S, optim_S] = stiffness_design(dS, robot);
+    diag(S0) + diag(dS)
     s0_ar(:,i) = diag(S0) + diag(dS);
     real_s_ar(:,i) = diag(real_S);
     optim_s_ar(:,i) = diag(optim_S);
 end
+
+optim_S
+S0 + dS
+real_S
 
 fig = figure('Color', 'w');
 fig.Name = "l";

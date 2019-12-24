@@ -16,14 +16,9 @@ real_s_ar = zeros(3,20);
 optim_s_ar = zeros(3,20);
 
 for i = 1:1
-    dS = [1 0 0
-          0 -1 0 
-          0 0 -1]*1;
-    [real_S, optim_S] = stiffness_design_node(dS, robot)
+
+    r = fk_approx(robot)
   
-    s0_ar(:,i) = diag(S0) + diag(dS);
-    real_s_ar(:,i) = diag(real_S);
-    optim_s_ar(:,i) = diag(optim_S);
 end
 
 fig = figure('Color', 'w');
