@@ -2,8 +2,8 @@ function visualize_rods_stl(rods, colors, alpha)
 
 fv1 = main_stlread('cylindb.stl');
 
-scale = [0.1 0 0
-    0 0.1 0
+scale = [0.3 0 0
+    0 0.3 0
     0 0 29];
 
 for index = 1:length(rods)
