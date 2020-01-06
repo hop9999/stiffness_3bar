@@ -36,12 +36,4 @@ end
 %     light('Position',[-2 3 4]*2,'Style','local');
 %     light('Position',[1 -2 0.5]*2,'Style','local');
 
-campos('manual')
-campos([-1,-1,1])
-
-xlabel("x");
-ylabel("y");
-zlabel("z");
-
-axis equal;
 end
