@@ -1,4 +1,4 @@
-close all;
+% close all;
 
 r_init = [2; 0];
 r1 = [0; 0];
@@ -13,6 +13,7 @@ get_force_appr = get_force_comb_approx(r_init, r1);
 
 Count = 100; 
 range = 4;
+% range = 1.5;
 r_step = 2*range / Count;
 r_min = [-range; -range];
 
@@ -61,7 +62,7 @@ ax.FontSize = 14;
 ax.CLim = [0 2.5];
 xlabel_handle = xlabel('$$x$$, m', 'Interpreter', 'latex');
 ylabel_handle = ylabel('$$y$$, m', 'Interpreter', 'latex');
-zlabel_handle = zlabel('$$z$$, m', 'Interpreter', 'latex');
+zlabel_handle = zlabel('$$||\epsilon||$$, N', 'Interpreter', 'latex');
 axis equal;
 % colorbar;
 
@@ -78,8 +79,10 @@ ax.MinorGridAlpha = 0.2;
 ax.FontName = 'Times New Roman';
 ax.FontSize = 14;
 ax.CLim = [0 2.5];
-xlabel_handle = xlabel('$$x$$, m', 'Interpreter', 'latex');
-ylabel_handle = ylabel('$$y$$, m', 'Interpreter', 'latex');
+% xlabel_handle = xlabel('$$x$$, m', 'Interpreter', 'latex');
+% ylabel_handle = ylabel('$$y$$, m', 'Interpreter', 'latex');
+xlabel_handle = xlabel('$$r_x$$, m', 'Interpreter', 'latex');
+ylabel_handle = ylabel('$$r_y$$, m', 'Interpreter', 'latex');
 axis equal;
 colorbar;
 

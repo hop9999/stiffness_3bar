@@ -1,8 +1,14 @@
-function [real_S, optim_S, r, ro] = stiffness_design_node(dS, robot)
+function [real_S, optim_S, r, ro] = stiffness_design_node_force_jacobian(dS, robot)
 
 k  = robot.k;
 r_init = robot.r;
 ro_init =  robot.ro;
+
+n0 = zeros(3, 4);
+n0(:, 1) = r_init(:, 5) - r_init(:, 6);
+n0(:, 2) = r_init(:, 4) - r_init(:, 6);
+n0(:, 3) = r_init(:, 3) - r_init(:, 6);
+n0(:, 4) = r_init(:, 1) - r_init(:, 6);
 
 con = get_connectivity();
       
@@ -10,16 +16,25 @@ con = get_connectivity();
 s = size(con);
 normal = get_normal(r_init);
 
-S0 = g_S(r_init, ro_init);
+S0 = g_S(r_init, ro_init, n0);
 
 S_desired = S0 + dS;
 
 vS_desired = reshape_stiffness(S_desired);
 
 %stiffness
-tensor_K_r  = g_tensor_K_r(r_init, ro_init);
-tensor_K_ro = g_tensor_K_ro(r_init, ro_init);
-vS_0        = g_vS_0(r_init, ro_init);
+tensor_K_r  = g_tensor_K_r(r_init, ro_init, n0);
+tensor_K_ro = g_tensor_K_ro(r_init, ro_init, n0);
+vS_0        = g_vS_0(r_init, ro_init, n0);
+
+K_r1 = g_K_r1(r_init, ro_init);
+K_r2 = g_K_r2(r_init, ro_init);
+K_r3 = g_K_r3(r_init, ro_init);
+
+K_ro1 = g_K_ro1(r_init, ro_init);
+K_ro2 = g_K_ro2(r_init, ro_init);
+K_ro3 = g_K_ro3(r_init, ro_init);
+
 
 
 cvx_begin quiet
@@ -31,17 +46,10 @@ cvx_begin quiet
 
     %forces
     %f_norm = zeros(3,s(1));
-    for i = 1:s(1)
-        f_norm(:,i) = -k(con(i,3))*((r(:,con(i,1)) - r(:,con(i,2))) - ro(con(i,3))*normal(:,i));
-    end
+    f1 = K_r1(r, ro)*r + K_ro1*ro;
+    f2 = K_r2(r, ro)*r + K_ro2*ro;
+    f3 = K_r3(r, ro)*r + K_ro3*ro;
 
-    for i = 1:s(1)
-        f_tang(:,i) = -k(con(i,3))*(dot(normal(:,i), (r(:,con(i,1)) - r(:,con(i,2)))) - ro(con(i,3)))*normal(:,i);
-    end
-
-    for i = 1:s(1)
-        f_res(:,i) = (f_norm(:,i) + f_tang(:,i))/2;
-    end
 
     %stiffness
     vS = tensor_K_r*r(:) + tensor_K_ro*ro + vS_0;
@@ -65,4 +73,4 @@ cvx_end
 
 optim_S = reshape_stiffness_back(vS);
 real_S = g_S(r, ro);
-% 1
+

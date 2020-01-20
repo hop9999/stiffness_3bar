@@ -1,8 +1,14 @@
-function [real_S, optim_S, r, ro] = stiffness_design_node(dS, robot)
+function [real_S, optim_S, r, ro] = stiffness_design_node9(dS, robot)
 
 k  = robot.k;
 r_init = robot.r;
 ro_init =  robot.ro;
+
+n0 = zeros(3, 4);
+n0(:, 1) = r_init(:, 5) - r_init(:, 6);
+n0(:, 2) = r_init(:, 4) - r_init(:, 6);
+n0(:, 3) = r_init(:, 3) - r_init(:, 6);
+n0(:, 4) = r_init(:, 1) - r_init(:, 6);
 
 con = get_connectivity();
       
@@ -50,7 +56,7 @@ cvx_begin quiet
     f2 = f_res(:,5) + f_res(:,6) + f_res(:,7) + f_res(:,8);
     f3 = f_res(:,9) + f_res(:,10) + f_res(:,11) + f_res(:,12);
     
-    minimize( (vS(1)-vS_desired(1))^2 + (vS(5)-vS_desired(5))^2 + (vS(9)-vS_desired(9))^2)
+    minimize( norm(vS(:)-vS_desired(:)))
     subject to
         f1 == zeros(3, 1);
         f2 == zeros(3, 1);
