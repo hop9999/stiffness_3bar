@@ -30,9 +30,16 @@ for i = 1:Count
         f = get_force_exact(r, r1, k, ro);
         fn = get_force_appr(r, r1, k, ro);
         
+        if norm(r) > 1
         error_array(i, j) = norm(f - fn);
         error_arrayX(i, j) = f(1) - fn(1);
         error_arrayY(i, j) = f(2) - fn(2);
+        else
+        error_array(i, j) = NaN;
+        error_arrayX(i, j) = NaN;
+        error_arrayY(i, j) = NaN;
+        end
+            
         X(i, j) = r(1);
         Y(i, j) = r(2);
     end
@@ -60,8 +67,8 @@ ax.MinorGridAlpha = 0.2;
 ax.FontName = 'Times New Roman';
 ax.FontSize = 14;
 ax.CLim = [0 2.5];
-xlabel_handle = xlabel('$$x$$, m', 'Interpreter', 'latex');
-ylabel_handle = ylabel('$$y$$, m', 'Interpreter', 'latex');
+xlabel_handle = xlabel('$$r_x$$, m', 'Interpreter', 'latex');
+ylabel_handle = ylabel('$$r_y$$, m', 'Interpreter', 'latex');
 zlabel_handle = zlabel('$$||\epsilon||$$, N', 'Interpreter', 'latex');
 axis equal;
 % colorbar;

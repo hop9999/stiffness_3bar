@@ -1,10 +1,12 @@
-function visualize_rods_stl(rods, colors, alpha)
+function visualize_rods_stl(rods, colors, alpha, scale)
 
 fv1 = main_stlread('cylindb.stl');
 
+if nargin < 4
 scale = [0.3 0 0
     0 0.3 0
     0 0 29];
+end
 
 for index = 1:length(rods)
     

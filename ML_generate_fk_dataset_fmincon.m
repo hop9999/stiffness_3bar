@@ -1,7 +1,7 @@
 close all; clear; clc;
 
 ro_radius = 0.2;
-Count = 50000;
+Count = 500000;
 
 force_error_threshold = 0.05;
 
@@ -39,5 +39,5 @@ Result.r = Result.r(1:index, :);
 Result.ro = Result.ro(1:index, :);
 Result.error = Result.error(1:index);
 
-save('data_ML_fmincon_dataset', 'Result', 'ro_radius', 'force_error_threshold')
+save('data_ML_fmincon_dataset_500k', 'Result', 'ro_radius', 'force_error_threshold')
 
